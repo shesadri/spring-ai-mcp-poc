@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub MCP Server - Test Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f6f8fa;
+            color: #24292e;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: #fff;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin-bottom: 10px;
+            color: #0366d6;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .status.healthy {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .section {
+            background: #fff;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background: #f6f8fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e1e4e8;
+            font-weight: 600;
+        }
+        
+        .section-content {
+            padding: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        button {
+            background: #0366d6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        button:hover {
+            background: #0256cc;
+        }
+        
+        .response {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .api-list {
+            list-style: none;
+        }
+        
+        .api-list li {
+            padding: 10px;
+            border-bottom: 1px solid #e1e4e8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .api-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .method {
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .method.get {
+            background: #28a745;
+        }
+        
+        .method.post {
+            background: #fd7e14;
+        }
+        
+        .endpoint {
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 13px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>GitHub MCP Server</h1>
+            <p>Model Context Protocol Test Interface</p>
+            <span id="status" class="status">Checking...</span>
+        </div>
+        
+        <div class="section">
+            <div class="section-header">Available API Endpoints</div>
+            <div class="section-content">
+                <ul class="api-list">
+                    <li>
+                        <div>
+                            <span class="method get">GET</span>
+                            <span class="endpoint">/health</span>
+                        </div>
+                        <span>Health check endpoint</span>
+                    </li>
+                    <li>
+                        <div>
+                            <span class="method get">GET</span>
+                            <span class="endpoint">/api/repos/{owner}/{repo}</span>
+                        </div>
+                        <span>Get repository information</span>
+                    </li>
+                    <li>
+                        <div>
+                            <span class="method get">GET</span>
+                            <span class="endpoint">/api/users/{username}/repos</span>
+                        </div>
+                        <span>List user repositories</span>
+                    </li>
+                    <li>
+                        <div>
+                            <span class="method get">GET</span>
+                            <span class="endpoint">/api/repos/{owner}/{repo}/issues</span>
+                        </div>
+                        <span>List repository issues</span>
+                    </li>
+                    <li>
+                        <div>
+                            <span class="method post">POST</span>
+                            <span class="endpoint">/api/repos/{owner}/{repo}/issues</span>
+                        </div>
+                        <span>Create new issue</span>
+                    </li>
+                    <li>
+                        <div>
+                            <span class="method get">GET</span>
+                            <span class="endpoint">/api/repos/{owner}/{repo}/pulls</span>
+                        </div>
+                        <span>List pull requests</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-header">Test Repository API</div>
+            <div class="section-content">
+                <div class="form-group">
+                    <label for="repoOwner">Repository Owner:</label>
+                    <input type="text" id="repoOwner" placeholder="octocat" value="octocat">
+                </div>
+                <div class="form-group">
+                    <label for="repoName">Repository Name:</label>
+                    <input type="text" id="repoName" placeholder="Hello-World" value="Hello-World">
+                </div>
+                <button onclick="getRepository()">Get Repository Info</button>
+                <div id="repoResponse" class="response" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-header">Test Issues API</div>
+            <div class="section-content">
+                <div class="form-group">
+                    <label for="issueOwner">Repository Owner:</label>
+                    <input type="text" id="issueOwner" placeholder="octocat" value="octocat">
+                </div>
+                <div class="form-group">
+                    <label for="issueRepo">Repository Name:</label>
+                    <input type="text" id="issueRepo" placeholder="Hello-World" value="Hello-World">
+                </div>
+                <div class="form-group">
+                    <label for="issueState">State:</label>
+                    <select id="issueState">
+                        <option value="open">Open</option>
+                        <option value="closed">Closed</option>
+                        <option value="all">All</option>
+                    </select>
+                </div>
+                <button onclick="getIssues()">Get Issues</button>
+                <div id="issuesResponse" class="response" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000';
+        
+        // Check server health on page load
+        window.addEventListener('load', checkHealth);
+        
+        async function checkHealth() {
+            const statusEl = document.getElementById('status');
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                if (response.ok) {
+                    const data = await response.json();
+                    statusEl.textContent = 'Healthy';
+                    statusEl.className = 'status healthy';
+                } else {
+                    throw new Error('Server not responding');
+                }
+            } catch (error) {
+                statusEl.textContent = 'Error';
+                statusEl.className = 'status error';
+            }
+        }
+        
+        async function getRepository() {
+            const owner = document.getElementById('repoOwner').value;
+            const repo = document.getElementById('repoName').value;
+            const responseEl = document.getElementById('repoResponse');
+            
+            if (!owner || !repo) {
+                alert('Please enter both owner and repository name');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/repos/${owner}/${repo}`);
+                const data = await response.json();
+                
+                responseEl.textContent = JSON.stringify(data, null, 2);
+                responseEl.style.display = 'block';
+            } catch (error) {
+                responseEl.textContent = `Error: ${error.message}`;
+                responseEl.style.display = 'block';
+            }
+        }
+        
+        async function getIssues() {
+            const owner = document.getElementById('issueOwner').value;
+            const repo = document.getElementById('issueRepo').value;
+            const state = document.getElementById('issueState').value;
+            const responseEl = document.getElementById('issuesResponse');
+            
+            if (!owner || !repo) {
+                alert('Please enter both owner and repository name');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/repos/${owner}/${repo}/issues?state=${state}`);
+                const data = await response.json();
+                
+                responseEl.textContent = JSON.stringify(data, null, 2);
+                responseEl.style.display = 'block';
+            } catch (error) {
+                responseEl.textContent = `Error: ${error.message}`;
+                responseEl.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
